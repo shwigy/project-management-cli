@@ -1,19 +1,21 @@
-"""Small helper for validating due-date strings."""
+"""Due-date parsing, backed by python-dateutil for flexible input formats."""
 
-from datetime import datetime
+from dateutil import parser as dateutil_parser
+from dateutil.parser import ParserError
 
 DATE_FORMAT = "%Y-%m-%d"
 
 
 def parse_due_date(value):
-    """Validate a YYYY-MM-DD date string, returning it unchanged if valid.
+    """Parse a user-supplied due date (e.g. "2026-09-01", "Sept 1 2026",
+    "09/01/2026") and normalize it to YYYY-MM-DD for storage.
 
-    Raises ValueError with a friendly message on bad input.
+    Raises ValueError with a friendly message on unparseable input.
     """
     if not value:
         return None
     try:
-        datetime.strptime(value, DATE_FORMAT)
-    except ValueError:
-        raise ValueError(f"due date must be in {DATE_FORMAT} format, got {value!r}")
-    return value
+        parsed = dateutil_parser.parse(value)
+    except (ParserError, ValueError, OverflowError):
+        raise ValueError(f"could not parse due date: {value!r}")
+    return parsed.strftime(DATE_FORMAT)

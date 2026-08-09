@@ -19,10 +19,21 @@ JSON file between runs.
   command and reloaded automatically on startup. Missing or corrupt data
   files are handled gracefully (treated as empty).
 - **Pretty output**: tables rendered with [rich](https://github.com/Textualize/rich).
+- **Flexible due dates**: due dates accept natural formats ("Sept 1 2026",
+  "09/01/2026", "2026-09-01") via [python-dateutil](https://dateutil.readthedocs.io/),
+  normalized to `YYYY-MM-DD` for storage.
 
 ## Setup
 
-Requires Python 3.8+.
+Requires Python 3.8+. Dependencies are managed with [Pipenv](https://pipenv.pypa.io/):
+
+```bash
+pipenv install --dev
+pipenv shell
+```
+
+A plain `requirements.txt` is also included if you'd rather use a standard
+virtualenv:
 
 ```bash
 python3 -m venv venv
@@ -63,7 +74,8 @@ src/
   utils/               # storage.py (JSON I/O), dates.py (due-date validation)
 data/data.json        # persisted users/projects/tasks
 tests/                 # pytest unit tests for models, storage, and CLI commands
-requirements.txt
+Pipfile / Pipfile.lock # dependency management
+requirements.txt       # plain-pip fallback
 ```
 
 ## Design notes
